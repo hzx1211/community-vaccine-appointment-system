@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vaccine.mapper.AppointmentMapper">
+
+    <update id="update">
+        UPDATE appointment
+        <set>
+            <if test="status != null">status = #{status},</if>
+            <if test="rejectReason != null">reject_reason = #{rejectReason},</if>
+            <if test="payTime != null">pay_time = #{payTime},</if>
+            <if test="vaccinateTime != null">vaccinate_time = #{vaccinateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="findList" resultType="com.vaccine.entity.Appointment">
+        SELECT a.*, u.username, u.real_name, v.name as vaccine_name, c.name as community_name
+        FROM appointment a
+        LEFT JOIN user u ON a.user_id = u.id
+        LEFT JOIN vaccine v ON a.vaccine_id = v.id
+        LEFT JOIN community c ON a.community_id = c.id
+        <where>
+            <if test="userId != null">AND a.user_id = #{userId}</if>
+            <if test="vaccineId != null">AND a.vaccine_id = #{vaccineId}</if>
+            <if test="communityId != null">AND a.community_id = #{communityId}</if>
+            <if test="status != null">AND a.status = #{status}</if>
+            <if test="orderNo != null and orderNo != ''">AND a.order_no LIKE CONCAT('%', #{orderNo}, '%')</if>
+            <if test="excludePendingStatus != null and excludePendingStatus">AND a.status != 0</if>
+        </where>
+        ORDER BY a.create_time DESC
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM appointment a
+        <where>
+            <if test="userId != null">AND a.user_id = #{userId}</if>
+            <if test="vaccineId != null">AND a.vaccine_id = #{vaccineId}</if>
+            <if test="communityId != null">AND a.community_id = #{communityId}</if>
+            <if test="status != null">AND a.status = #{status}</if>
+            <if test="orderNo != null and orderNo != ''">AND a.order_no LIKE CONCAT('%', #{orderNo}, '%')</if>
+            <if test="excludePendingStatus != null and excludePendingStatus">AND a.status != 0</if>
+        </where>
+    </select>
+</mapper>

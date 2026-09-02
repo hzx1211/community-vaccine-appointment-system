@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vaccine.mapper.CommunityMapper">
+
+    <update id="update">
+        UPDATE community
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="contactPhone != null">contact_phone = #{contactPhone},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="image != null">image = #{image},</if>
+            <if test="status != null">status = #{status},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteBatch">
+        DELETE FROM community WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="findList" resultType="com.vaccine.entity.Community">
+        SELECT c.*, a.username as admin_username, a.real_name as admin_real_name
+        FROM community c
+        LEFT JOIN admin a ON a.community_id = c.id AND a.role = 'community_admin'
+        <where>
+            <if test="name != null and name != ''">AND c.name LIKE CONCAT('%', #{name}, '%')</if>
+            <if test="status != null">AND c.status = #{status}</if>
+        </where>
+        ORDER BY c.create_time DESC
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM community
+        <where>
+            <if test="name != null and name != ''">AND name LIKE CONCAT('%', #{name}, '%')</if>
+            <if test="status != null">AND status = #{status}</if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 480" role="img" aria-labelledby="title desc">
+  <title id="title">疫苗预约系统</title>
+  <desc id="desc">疫苗预约服务默认横幅</desc>
+  <defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#3f9e9a"/><stop offset="1" stop-color="#7fcfc4"/></linearGradient></defs>
+  <rect width="1200" height="480" fill="url(#g)"/>
+  <circle cx="920" cy="236" r="160" fill="#fff" opacity=".16"/>
+  <path d="M846 116h112v62l34 48v128a52 52 0 0 1-52 52h-76a52 52 0 0 1-52-52V226l34-48v-62z" fill="#fff" opacity=".95"/>
+  <path d="M846 246h146M903 286v72m-36-36h72" stroke="#3f9e9a" stroke-width="18" stroke-linecap="round"/>
+  <text x="120" y="220" font-family="Microsoft YaHei, sans-serif" font-size="54" font-weight="700" fill="#fff">疫苗预约服务</text>
+  <text x="124" y="282" font-family="Microsoft YaHei, sans-serif" font-size="26" fill="#e7fffb">及时预约，安心接种</text>
+</svg>

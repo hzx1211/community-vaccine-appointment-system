@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vaccine.mapper.RechargeRecordMapper">
+
+    <select id="findList" resultType="com.vaccine.entity.RechargeRecord">
+        SELECT r.*, u.username FROM recharge_record r
+        LEFT JOIN user u ON r.user_id = u.id
+        <where>
+            <if test="userId != null">AND r.user_id = #{userId}</if>
+            <if test="status != null">AND r.status = #{status}</if>
+        </where>
+        ORDER BY r.create_time DESC
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM recharge_record r
+        <where>
+            <if test="userId != null">AND r.user_id = #{userId}</if>
+            <if test="status != null">AND r.status = #{status}</if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,38 @@
+# Java / Maven build output
+backend/target/
+backend/logs/
+backend/uploads/
+*.log
+
+# Node.js dependencies and generated frontend files
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.npm-cache/
+
+# Local environment overrides (commit an .env.example instead)
+.env
+.env.*
+!.env.example
+
+# IDE and operating-system files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Runtime notifications, Office lock files, and duplicate/unrelated working files
+notifications/
+~$*
+back/
+defect_distribution_bw.png
+defect_distribution_bw.svg
+draw_defect_bar_chart.py
+hzx毕业设计说明书1.md
+
+# Superseded local capture kept outside version control
+screenshots/home-edge.png
+
+# Defense materials are published through the separate private repository
+document/

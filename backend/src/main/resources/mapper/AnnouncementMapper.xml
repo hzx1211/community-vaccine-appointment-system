@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vaccine.mapper.AnnouncementMapper">
+
+    <update id="update">
+        UPDATE announcement
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="status != null">status = #{status},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="findList" resultType="com.vaccine.entity.Announcement">
+        SELECT * FROM announcement
+        <where>
+            <if test="title != null and title != ''">AND title LIKE CONCAT('%', #{title}, '%')</if>
+            <if test="status != null">AND status = #{status}</if>
+        </where>
+        ORDER BY sort ASC, create_time DESC
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM announcement
+        <where>
+            <if test="title != null and title != ''">AND title LIKE CONCAT('%', #{title}, '%')</if>
+            <if test="status != null">AND status = #{status}</if>
+        </where>
+    </select>
+</mapper>

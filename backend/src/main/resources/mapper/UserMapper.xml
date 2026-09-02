@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vaccine.mapper.UserMapper">
+
+    <update id="update">
+        UPDATE user
+        <set>
+            <if test="realName != null">real_name = #{realName},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="idCard != null">id_card = #{idCard},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="status != null">status = #{status},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="findList" resultType="com.vaccine.entity.User">
+        SELECT * FROM user
+        <where>
+            <if test="username != null and username != ''">AND username LIKE CONCAT('%', #{username}, '%')</if>
+            <if test="realName != null and realName != ''">AND real_name LIKE CONCAT('%', #{realName}, '%')</if>
+            <if test="status != null">AND status = #{status}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM user
+        <where>
+            <if test="username != null and username != ''">AND username LIKE CONCAT('%', #{username}, '%')</if>
+            <if test="realName != null and realName != ''">AND real_name LIKE CONCAT('%', #{realName}, '%')</if>
+            <if test="status != null">AND status = #{status}</if>
+        </where>
+    </select>
+</mapper>

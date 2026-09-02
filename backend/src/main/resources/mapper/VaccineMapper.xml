@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vaccine.mapper.VaccineMapper">
+
+    <update id="update">
+        UPDATE vaccine
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="manufacturer != null">manufacturer = #{manufacturer},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="stock != null">stock = #{stock},</if>
+            <if test="doses != null">doses = #{doses},</if>
+            <if test="intervalDays != null">interval_days = #{intervalDays},</if>
+            <if test="targetGroup != null">target_group = #{targetGroup},</if>
+            <if test="contraindication != null">contraindication = #{contraindication},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="image != null">image = #{image},</if>
+            <if test="status != null">status = #{status},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="findList" resultType="com.vaccine.entity.Vaccine">
+        SELECT v.*, c.name as category_name FROM vaccine v
+        LEFT JOIN vaccine_category c ON v.category_id = c.id
+--         这里 LEFT JOIN vaccine_category 把分类名称 categoryName 一起查出来，映射到 Vaccine 实体的非数据库字段。
+
+        <where>
+            <if test="name != null and name != ''">AND v.name LIKE CONCAT('%', #{name}, '%')</if>
+            <if test="categoryId != null">AND v.category_id = #{categoryId}</if>
+            <if test="status != null">AND v.status = #{status}</if>
+        </where>
+        ORDER BY v.create_time DESC
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM vaccine v
+        <where>
+            <if test="name != null and name != ''">AND v.name LIKE CONCAT('%', #{name}, '%')</if>
+            <if test="categoryId != null">AND v.category_id = #{categoryId}</if>
+            <if test="status != null">AND v.status = #{status}</if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,666 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"name": "vaccine-system-api-test",
+		"description": "社区疫苗预约管理系统接口测试集合\n\n包含三个模块：\n1. 认证模块（注册、登录、获取用户信息）\n2. 疫苗模块（列表查询、详情查询、搜索）\n3. 预约模块（创建预约、我的预约、支付、取消）\n4. 安全测试（SQL注入、XSS、Token伪造、限流）",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8081/api"
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "adminToken",
+			"value": ""
+		},
+		{
+			"key": "communityAdminToken",
+			"value": ""
+		},
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "vaccineId",
+			"value": ""
+		},
+		{
+			"key": "appointmentId",
+			"value": ""
+		}
+	],
+	"item": [
+		{
+			"name": "01-认证模块",
+			"item": [
+				{
+					"name": "1.1 用户注册（正常）",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('注册成功-状态码200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('返回code为200', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser_postman\",\n    \"password\": \"123456\",\n    \"realName\": \"测试用户\",\n    \"phone\": \"13800000099\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] }
+					}
+				},
+				{
+					"name": "1.2 用户注册（用户名重复）",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('重复注册被拒绝', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.not.eql(200);",
+									"    pm.expect(jsonData.message || jsonData.msg).to.include('已存在');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser_postman\",\n    \"password\": \"123456\",\n    \"realName\": \"测试用户\",\n    \"phone\": \"13800000099\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] }
+					}
+				},
+				{
+					"name": "1.3 用户登录（正常）",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('登录成功-状态码200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('返回Token', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(200);",
+									"    pm.expect(jsonData.data.token).to.be.a('string');",
+									"    pm.environment.set('token', jsonData.data.token);",
+									"    pm.environment.set('userId', jsonData.data.userId || jsonData.data.id);",
+									"});",
+									"pm.test('响应时间小于500ms', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser_postman\",\n    \"password\": \"123456\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+					}
+				},
+				{
+					"name": "1.4 用户登录（密码错误）",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('错误密码被拒绝', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.not.eql(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser_postman\",\n    \"password\": \"wrong_password\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+					}
+				},
+				{
+					"name": "1.5 获取当前用户信息",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('获取用户信息成功', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(200);",
+									"    pm.expect(jsonData.data.username).to.eql('testuser_postman');",
+									"    pm.expect(jsonData.data.role).to.eql('user');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": { "raw": "{{baseUrl}}/auth/info", "host": ["{{baseUrl}}"], "path": ["auth", "info"] }
+					}
+				},
+				{
+					"name": "1.6 管理员登录",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('管理员登录成功', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(200);",
+									"    pm.environment.set('adminToken', jsonData.data.token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"123456\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/auth/login/admin", "host": ["{{baseUrl}}"], "path": ["auth", "login", "admin"] }
+					}
+				},
+				{
+					"name": "1.7 社区管理员登录",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('社区管理员登录成功', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(200);",
+									"    pm.environment.set('communityAdminToken', jsonData.data.token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"a1\",\n    \"password\": \"123456\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/auth/login/admin", "host": ["{{baseUrl}}"], "path": ["auth", "login", "admin"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "02-疫苗模块",
+			"item": [
+				{
+					"name": "2.1 疫苗分页列表",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('疫苗列表查询成功', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(200);",
+									"    pm.expect(jsonData.data).to.have.property('list');",
+									"    pm.expect(jsonData.data).to.have.property('total');",
+									"    if (jsonData.data.list.length > 0) {",
+									"        pm.environment.set('vaccineId', jsonData.data.list[0].id);",
+									"    }",
+									"});",
+									"pm.test('响应时间小于500ms', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/vaccine/page?pageNum=1&pageSize=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["vaccine", "page"],
+							"query": [
+								{ "key": "pageNum", "value": "1" },
+								{ "key": "pageSize", "value": "10" }
+							]
+						}
+					}
+				},
+				{
+					"name": "2.2 疫苗详情查询",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('疫苗详情查询成功', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(200);",
+									"    pm.expect(jsonData.data).to.have.property('id');",
+									"    pm.expect(jsonData.data).to.have.property('name');",
+									"});",
+									"pm.test('响应时间小于300ms', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(300);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": { "raw": "{{baseUrl}}/vaccine/{{vaccineId}}", "host": ["{{baseUrl}}"], "path": ["vaccine", "{{vaccineId}}"] }
+					}
+				},
+				{
+					"name": "2.3 疫苗关键词搜索",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('搜索返回结果', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(200);",
+									"    pm.expect(jsonData.data).to.have.property('list');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/vaccine/page?pageNum=1&pageSize=10&name=流感",
+							"host": ["{{baseUrl}}"],
+							"path": ["vaccine", "page"],
+							"query": [
+								{ "key": "pageNum", "value": "1" },
+								{ "key": "pageSize", "value": "10" },
+								{ "key": "name", "value": "流感" }
+							]
+						}
+					}
+				},
+				{
+					"name": "2.4 获取疫苗分类",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('获取分类成功', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(200);",
+									"    pm.expect(jsonData.data).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": { "raw": "{{baseUrl}}/public/vaccine-categories", "host": ["{{baseUrl}}"], "path": ["public", "vaccine-categories"] }
+					}
+				},
+				{
+					"name": "2.5 获取社区列表",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('获取社区列表成功', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(200);",
+									"    pm.expect(jsonData.data).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": { "raw": "{{baseUrl}}/public/communities", "host": ["{{baseUrl}}"], "path": ["public", "communities"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "03-预约模块",
+			"item": [
+				{
+					"name": "3.1 创建预约",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('预约创建成功', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(200);",
+									"});",
+									"pm.test('响应时间小于500ms', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vaccineId\": {{vaccineId}},\n    \"communityId\": 1,\n    \"appointmentDate\": \"2026-04-15\",\n    \"timeSlot\": \"09:00-11:00\",\n    \"doseNumber\": 1,\n    \"remark\": \"Postman接口测试预约\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/appointment", "host": ["{{baseUrl}}"], "path": ["appointment"] }
+					}
+				},
+				{
+					"name": "3.2 我的预约列表",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('获取我的预约成功', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(200);",
+									"    pm.expect(jsonData.data).to.be.an('array');",
+									"    if (jsonData.data.length > 0) {",
+									"        pm.environment.set('appointmentId', jsonData.data[0].id);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": { "raw": "{{baseUrl}}/appointment/my", "host": ["{{baseUrl}}"], "path": ["appointment", "my"] }
+					}
+				},
+				{
+					"name": "3.3 预约审核（社区管理员通过）",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('审核操作成功', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{communityAdminToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": {{appointmentId}},\n    \"status\": 1\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/appointment/audit", "host": ["{{baseUrl}}"], "path": ["appointment", "audit"] }
+					}
+				},
+				{
+					"name": "3.4 预约支付",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('支付操作成功', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(200);",
+									"});",
+									"pm.test('响应时间小于500ms', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": { "raw": "{{baseUrl}}/appointment/{{appointmentId}}/pay", "host": ["{{baseUrl}}"], "path": ["appointment", "{{appointmentId}}", "pay"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "04-安全测试",
+			"item": [
+				{
+					"name": "4.1 SQL注入测试-登录接口",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('SQL注入被防御', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.not.eql(200);",
+									"    pm.expect(jsonData.data).to.be.null;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin' OR '1'='1\",\n    \"password\": \"' OR '1'='1\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+					}
+				},
+				{
+					"name": "4.2 XSS攻击测试-注册接口",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('XSS脚本未被执行', function () {",
+									"    var responseText = pm.response.text();",
+									"    pm.expect(responseText).to.not.include('<script>');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"<script>alert('xss')</script>\",\n    \"password\": \"123456\",\n    \"realName\": \"<img src=x onerror=alert(1)>\",\n    \"phone\": \"13800000000\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] }
+					}
+				},
+				{
+					"name": "4.3 Token伪造测试",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('伪造Token被拒绝-返回401', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer fake.token.here123456" }
+						],
+						"url": { "raw": "{{baseUrl}}/auth/info", "host": ["{{baseUrl}}"], "path": ["auth", "info"] }
+					}
+				},
+				{
+					"name": "4.4 越权访问测试-普通用户访问审核接口",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('普通用户越权被拒绝', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.be.oneOf([403, 500]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1,\n    \"status\": 1\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/appointment/audit", "host": ["{{baseUrl}}"], "path": ["appointment", "audit"] }
+					}
+				},
+				{
+					"name": "4.5 无Token访问受保护接口",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('无Token被拒绝-返回401', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": { "raw": "{{baseUrl}}/auth/info", "host": ["{{baseUrl}}"], "path": ["auth", "info"] }
+					}
+				}
+			]
+		}
+	]
+}

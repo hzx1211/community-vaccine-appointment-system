@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vaccine.mapper.NewsMapper">
+
+    <update id="update">
+        UPDATE news
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="summary != null">summary = #{summary},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="coverImage != null">cover_image = #{coverImage},</if>
+            <if test="status != null">status = #{status},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="findList" resultType="com.vaccine.entity.News">
+        SELECT n.*, c.name as community_name, u.username as author_name FROM news n
+        LEFT JOIN community c ON n.community_id = c.id
+        LEFT JOIN user u ON n.author_id = u.id
+        <where>
+            <if test="title != null and title != ''">AND n.title LIKE CONCAT('%', #{title}, '%')</if>
+            <if test="communityId != null">AND n.community_id = #{communityId}</if>
+            <if test="status != null">AND n.status = #{status}</if>
+        </where>
+        ORDER BY n.create_time DESC
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM news n
+        <where>
+            <if test="title != null and title != ''">AND n.title LIKE CONCAT('%', #{title}, '%')</if>
+            <if test="communityId != null">AND n.community_id = #{communityId}</if>
+            <if test="status != null">AND n.status = #{status}</if>
+        </where>
+    </select>
+</mapper>

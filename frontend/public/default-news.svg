@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-labelledby="title desc">
+  <title id="title">资讯默认图片</title>
+  <desc id="desc">资讯文档的插画</desc>
+  <rect width="640" height="400" fill="#f6f0ff"/>
+  <rect x="190" y="74" width="260" height="254" rx="20" fill="#fff" stroke="#9372c8" stroke-width="12"/>
+  <path d="M242 144h156m-156 48h156m-156 48h104" stroke="#9372c8" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="426" cy="290" r="50" fill="#e6dbfa"/>
+  <path d="m405 290 15 15 30-36" fill="none" stroke="#7b59b1" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="320" y="365" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="26" fill="#7654a8">健康资讯</text>
+</svg>

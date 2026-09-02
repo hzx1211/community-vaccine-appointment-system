@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-labelledby="title desc">
+  <title id="title">社区默认图片</title>
+  <desc id="desc">社区建筑和树木的插画</desc>
+  <rect width="640" height="400" fill="#edf4ff"/>
+  <path d="M126 312V176l104-72 104 72v136H126z" fill="#fff" stroke="#5b8fd7" stroke-width="12" stroke-linejoin="round"/>
+  <path d="M334 312V142l90-62 90 62v170H334z" fill="#d9e8ff" stroke="#5b8fd7" stroke-width="12" stroke-linejoin="round"/>
+  <g fill="#5b8fd7"><rect x="162" y="210" width="34" height="34" rx="4"/><rect x="250" y="210" width="34" height="34" rx="4"/><rect x="378" y="180" width="32" height="32" rx="4"/><rect x="440" y="180" width="32" height="32" rx="4"/></g>
+  <path d="M72 310c0-48 68-48 68 0M518 310c0-54 76-54 76 0" fill="none" stroke="#58a77e" stroke-width="18" stroke-linecap="round"/>
+  <text x="320" y="365" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="26" fill="#4674b0">接种社区</text>
+</svg>

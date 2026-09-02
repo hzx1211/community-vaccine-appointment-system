@@ -1,0 +1,72 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: vaccine-system
+  
+  # 数据库配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/vaccine_system2?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:123456}
+  
+  # Redis配置
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: 
+      database: 0
+      timeout: 10000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-wait: -1ms
+          max-idle: 8
+          min-idle: 0
+  
+  # 文件上传配置
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# MyBatis配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.vaccine.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+# JWT配置
+jwt:
+  secret: ${JWT_SECRET:VaccineSystemSecretKey2024VeryLongSecretKeyForJWT}
+  expiration: 86400000  # 24小时
+
+# Knife4j配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.vaccine.controller
+
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+# 文件上传路径
+file:
+  upload-path: ${VACCINE_UPLOAD_PATH:uploads}
+
+# 本地开发仅允许本机前端携带 Cookie/Authorization 调用；生产环境请通过 CORS_ALLOWED_ORIGIN_PATTERNS 覆盖。
+cors:
+  allowed-origin-patterns: ${CORS_ALLOWED_ORIGIN_PATTERNS:http://localhost:*,http://127.0.0.1:*}

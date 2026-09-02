@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vaccine.mapper.CollectionMapper">
+
+    <select id="findList" resultType="com.vaccine.entity.UserCollection">
+        SELECT c.*, v.name as vaccine_name, v.image as vaccine_image, v.price as vaccine_price
+        FROM collection c
+        LEFT JOIN vaccine v ON c.vaccine_id = v.id
+        <where>
+            <if test="userId != null">AND c.user_id = #{userId}</if>
+            <if test="vaccineId != null">AND c.vaccine_id = #{vaccineId}</if>
+        </where>
+        ORDER BY c.create_time DESC
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM collection c
+        <where>
+            <if test="userId != null">AND c.user_id = #{userId}</if>
+            <if test="vaccineId != null">AND c.vaccine_id = #{vaccineId}</if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-labelledby="title desc">
+  <title id="title">疫苗默认图片</title>
+  <desc id="desc">疫苗瓶和防护盾的插画</desc>
+  <rect width="640" height="400" fill="#e8f5f2"/>
+  <circle cx="320" cy="200" r="118" fill="#c7e8e1"/>
+  <path d="M286 102h68v44l20 28v115a36 36 0 0 1-36 36h-36a36 36 0 0 1-36-36V174l20-28v-44z" fill="#fff" stroke="#4aa9a5" stroke-width="12" stroke-linejoin="round"/>
+  <path d="M286 184h88" stroke="#4aa9a5" stroke-width="12"/>
+  <path d="M320 215v62m-31-31h62" stroke="#4aa9a5" stroke-width="14" stroke-linecap="round"/>
+  <text x="320" y="365" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="26" fill="#397f7c">疫苗信息</text>
+</svg>

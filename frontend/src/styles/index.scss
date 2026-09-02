@@ -1,0 +1,334 @@
+// 全局样式
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// 主题色变量
+:root {
+  --primary-color: #409eff;
+  --primary-light: #66b1ff;
+  --primary-dark: #3a8ee6;
+  --success-color: #67c23a;
+  --warning-color: #e6a23c;
+  --danger-color: #f56c6c;
+  --info-color: #909399;
+  --text-primary: #303133;
+  --text-regular: #606266;
+  --text-secondary: #909399;
+  --text-placeholder: #c0c4cc;
+  --border-color: #dcdfe6;
+  --border-light: #e4e7ed;
+  --bg-color: #f5f7fa;
+  --bg-light: #fafafa;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --transition: all 0.3s ease;
+}
+
+// 滚动条样式
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #c0c4cc, #a8abb2);
+  border-radius: 4px;
+  
+  &:hover {
+    background: linear-gradient(180deg, #a8abb2, #909399);
+  }
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--bg-color);
+  border-radius: 4px;
+}
+
+// 选中文本样式
+::selection {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+// 链接样式
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: var(--transition);
+  
+  &:hover {
+    color: var(--primary-light);
+  }
+}
+
+// 通用类
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-center {
+  text-align: center;
+}
+
+// 页面容器
+.page-container {
+  padding: 20px;
+  background-color: var(--bg-color);
+  min-height: calc(100vh - 60px);
+}
+
+// 卡片样式
+.card {
+  background: #fff;
+  border-radius: var(--radius-md);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  
+  &:hover {
+    box-shadow: var(--shadow-md);
+  }
+}
+
+// 渐变背景
+.gradient-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-primary {
+  background: linear-gradient(135deg, #409eff 0%, #66b1ff 100%);
+}
+
+.gradient-success {
+  background: linear-gradient(135deg, #67c23a 0%, #85ce61 100%);
+}
+
+// 动画
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+// 表格操作按钮
+.table-actions {
+  .el-button + .el-button {
+    margin-left: 8px;
+  }
+}
+
+// 搜索表单
+.search-form {
+  margin-bottom: 20px;
+  
+  .el-form-item {
+    margin-bottom: 10px;
+  }
+}
+
+// 响应式断点
+$breakpoints: (
+  'xs': 480px,
+  'sm': 576px,
+  'md': 768px,
+  'lg': 992px,
+  'xl': 1200px,
+  'xxl': 1400px
+);
+
+// 响应式混入
+@mixin respond-to($breakpoint) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    @media (max-width: map-get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  }
+}
+
+// 隐藏类
+.hidden-xs {
+  @media (max-width: 480px) { display: none !important; }
+}
+
+.hidden-sm {
+  @media (max-width: 576px) { display: none !important; }
+}
+
+.hidden-md {
+  @media (max-width: 768px) { display: none !important; }
+}
+
+// Element Plus 覆盖样式
+.el-button {
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  transition: var(--transition);
+  
+  &--primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    border: none;
+    
+    &:hover {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(64, 158, 255, 0.4);
+    }
+  }
+}
+
+.el-card {
+  border-radius: var(--radius-md);
+  border: none;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  
+  &:hover {
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.el-input__wrapper {
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  
+  &:hover {
+    box-shadow: 0 0 0 1px var(--primary-light) inset;
+  }
+}
+
+.el-table {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  
+  th.el-table__cell {
+    background: var(--bg-light) !important;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  
+  .el-table__row {
+    transition: var(--transition);
+    
+    &:hover > td {
+      background: #ecf5ff !important;
+    }
+  }
+}
+
+.el-dialog {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  
+  .el-dialog__header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    padding: 16px 20px;
+    margin: 0;
+    
+    .el-dialog__title {
+      color: #fff;
+      font-weight: 600;
+    }
+    
+    .el-dialog__headerbtn {
+      top: 16px;
+      
+      .el-dialog__close {
+        color: #fff;
+      }
+    }
+  }
+}
+
+.el-pagination {
+  .el-pager li {
+    border-radius: var(--radius-sm);
+    
+    &.is-active {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    }
+  }
+}
+
+.el-tag {
+  border-radius: 20px;
+  padding: 0 12px;
+}
+
+.el-avatar {
+  border: 2px solid #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+// 空状态美化
+.el-empty {
+  padding: 40px 0;
+  
+  .el-empty__description {
+    color: var(--text-secondary);
+  }
+}
+
+// 加载状态
+.el-loading-mask {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+}
